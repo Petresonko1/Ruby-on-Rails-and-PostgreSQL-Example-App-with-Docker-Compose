@@ -1,0 +1,20 @@
+version: '3'
+services:
+  db:
+    image: postgres
+    volumes:
+      - ./tmp/db:/var/lib/postgresql/data
+    env_file: example.env
+    container_name: example_db
+  web:
+    build: .
+    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
+    env_file: example.env
+    volumes:
+      - .:/example
+      - ./:/usr/src
+    ports:
+      - "3001:3000"
+    depends_on:
+      - db
+    container_name: example_web
